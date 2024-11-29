@@ -16,12 +16,13 @@ namespace NewC_5_4
             bool isWork = true;
             int userChoice;
 
-            Dictionary<string, string> dossiers = new Dictionary<string, string>();
+
+            Dictionary<string, List <string>> dossiers = new Dictionary<string, List<string>>();
 
             while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine($"\n{CommandAddDossier}. Добавить досье. \n\n{CommandOutputDossier}. Вывести все досье.\n\n {CommandDeliteDossier}. Удалить досье.\n\n{CommandExit}. Выход.");
+                Console.WriteLine($"\n{CommandAddDossier}. Добавить досье. \n{CommandOutputDossier}. Вывести все досье.\n {CommandDeliteDossier}. Удалить досье.\n{CommandExit}. Выход.");
                 userChoice = Convert.ToInt32(Console.ReadLine());
 
                 switch (userChoice)
@@ -49,29 +50,22 @@ namespace NewC_5_4
             }
         }
 
-        static void AddDossier(Dictionary<string, string> dossiers)
+        static void AddDossier(Dictionary<string, List<string>> dossiers)
         {
-            string userCreateFullName;
-            string userCreatePosition;
-
             Console.Clear();
             Console.WriteLine($"Введите ФИО Сотрудника:");
-            userCreateFullName = Console.ReadLine().ToLower();
+            string userCreateFullName = Console.ReadLine().ToLower();
 
-            if (dossiers.ContainsKey(userCreateFullName))
-            {
-                ReportAnError("Такой Сотрудник уже есть.");
-            }
+            Console.WriteLine($"Введите должность для этого сотрудника:");
+            string userCreatePosition = Console.ReadLine().ToLower();
+
+            if (dossiers.ContainsKey(userCreatePosition))
+                dossiers[userCreatePosition].Add(userCreateFullName);
             else
-            {
-                Console.Clear();
-                Console.WriteLine($"Введите должность для этого сотрудника:");
-                userCreatePosition = Console.ReadLine().ToLower();
-                dossiers.Add(userCreateFullName, userCreatePosition);
-            }
+                dossiers.Add(userCreatePosition, [userCreateFullName]);
         }
 
-        static void ShowAllDossiers(Dictionary<string, string> dossiers)
+        static void ShowAllDossiers(Dictionary<string, List<string>> dossiers)
         {
             Console.Clear();
 
@@ -81,31 +75,18 @@ namespace NewC_5_4
             }
             else
             {
-                foreach (var item in dossiers)
+                for (int i = 0; i < dossiers.LongCount(); i++)
                 {
-                    Console.Write($"{item.Key} - {item.Value};");
+
                 }
 
                 Console.ReadKey();
             }
         }
 
-        static void DeleteDossierByFullName(Dictionary<string, string> dossiers)
+        static void DeleteDossierByFullName(Dictionary<string, List<string>> dossiers)
         {
-            Console.WriteLine($"Введите ФИО сотрудника, которого нужно удалить из досье");
-            string userInputWord = Console.ReadLine().ToLower();
 
-            if (dossiers.ContainsKey(userInputWord))
-            {
-                dossiers.Remove(userInputWord);
-
-                Console.WriteLine($"Досье удалено.");
-                Console.ReadKey();
-            }
-            else
-            {
-                ReportAnError("Нет такого сотрудника");
-            }
         }
 
         static void ReportAnError(string causeOfError)
