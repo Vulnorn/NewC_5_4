@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace NewC_5_4
 {
@@ -8,22 +6,20 @@ namespace NewC_5_4
     {
         static void Main(string[] args)
         {
-            const int CommandAddDossier = 1;
-            const int CommandOutputDossier = 2;
-            const int CommandDeliteDossier = 3;
-            const int CommandExit = 4;
+            const string CommandAddDossier = "1";
+            const string CommandOutputDossier = "2";
+            const string CommandDeliteDossier = "3";
+            const string CommandExit = "4";
+
+            Dictionary<string, List<string>> dossiers = new Dictionary<string, List<string>>();
 
             bool isWork = true;
-            int userChoice;
-
-
-            Dictionary<string, List <string>> dossiers = new Dictionary<string, List<string>>();
 
             while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine($"\n{CommandAddDossier}. Добавить досье. \n{CommandOutputDossier}. Вывести все досье.\n {CommandDeliteDossier}. Удалить досье.\n{CommandExit}. Выход.");
-                userChoice = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine($"{CommandAddDossier}. Добавить досье.\n{CommandOutputDossier}. Вывести все досье.\n{CommandDeliteDossier}. Удалить досье.\n{CommandExit}. Выход.");
+                string userChoice = Console.ReadLine();
 
                 switch (userChoice)
                 {
@@ -54,15 +50,15 @@ namespace NewC_5_4
         {
             Console.Clear();
             Console.WriteLine($"Введите ФИО Сотрудника:");
-            string userCreateFullName = Console.ReadLine().ToLower();
+            string inputUserFullName = Console.ReadLine().ToLower();
 
             Console.WriteLine($"Введите должность для этого сотрудника:");
-            string userCreatePosition = Console.ReadLine().ToLower();
+            string inputUserPosition = Console.ReadLine().ToLower();
 
-            if (dossiers.ContainsKey(userCreatePosition))
-                dossiers[userCreatePosition].Add(userCreateFullName);
+            if (dossiers.ContainsKey(inputUserPosition))
+                dossiers[inputUserPosition].Add(inputUserFullName);
             else
-                dossiers.Add(userCreatePosition, [userCreateFullName]);
+                dossiers.Add(inputUserPosition, [inputUserFullName]);
         }
 
         static void ShowAllDossiers(Dictionary<string, List<string>> dossiers)
@@ -75,9 +71,16 @@ namespace NewC_5_4
             }
             else
             {
-                for (int i = 0; i < dossiers.LongCount(); i++)
+                foreach (var item in dossiers.Keys)
                 {
+                    Console.WriteLine($"Должность: {item} - ");
 
+                    foreach (var item2 in dossiers[item])
+                    {
+                        Console.Write($"{item2}; ");
+                    }
+
+                    Console.WriteLine();
                 }
 
                 Console.ReadKey();
@@ -86,7 +89,36 @@ namespace NewC_5_4
 
         static void DeleteDossierByFullName(Dictionary<string, List<string>> dossiers)
         {
+            Console.Clear();
+            Console.WriteLine($"Введите ФИО Сотрудника для удаления.");
+            string inputUser = Console.ReadLine().ToLower();
+            bool deletePosition= false;
+            bool deleteFullName= false;
 
+            foreach (var item in dossiers.Keys)
+            {
+                foreach (var item2 in dossiers[item])
+                {
+                    if (item2 == inputUser)
+                    {
+                        dossiers[item].Remove(item2);
+                        deleteFullName=true;
+
+                        if (dossiers[item]==null)
+                            deletePosition=true;
+                    }
+                }
+
+                if (deletePosition) 
+                    dossiers.Remove(item);
+            }
+
+            if (deleteFullName)
+                Console.WriteLine($"Сотрудник удален.");
+            else
+                ReportAnError("Нет такого сотрудника");
+
+            Console.ReadKey();
         }
 
         static void ReportAnError(string causeOfError)
