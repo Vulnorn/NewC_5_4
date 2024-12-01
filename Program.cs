@@ -95,8 +95,8 @@ namespace NewC_5_4
             Console.Clear();
             Console.WriteLine($"Введите ФИО Сотрудника для удаления.");
             string inputUser = Console.ReadLine().ToLower();
-            bool deletePosition= false;
-            bool deleteFullName= false;
+            bool deletePosition = false;
+            bool deleteFullName = false;
 
             foreach (var item in dossiers.Keys)
             {
@@ -105,14 +105,14 @@ namespace NewC_5_4
                     if (item2 == inputUser)
                     {
                         dossiers[item].Remove(item2);
-                        deleteFullName=true;
+                        deleteFullName = true;
 
-                        if (dossiers[item]==null)
-                            deletePosition=true;
+                        if (dossiers[item] == null)
+                            deletePosition = true;
                     }
                 }
 
-                if (deletePosition) 
+                if (deletePosition)
                     dossiers.Remove(item);
             }
 
