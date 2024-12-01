@@ -76,7 +76,7 @@ namespace NewC_5_4
             {
                 foreach (var item in dossiers.Keys)
                 {
-                    Console.WriteLine($"Должность: {item} - ");
+                    Console.Write($"Должность: {item} - ");
 
                     foreach (var item2 in dossiers[item])
                     {
