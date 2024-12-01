@@ -35,7 +35,7 @@ namespace NewC_5_4
                         break;
 
                     case CommandDeliteDossier:
-                        DeleteDossierByFullName(dossiers);
+                        DeleteDossierFullName(dossiers);
                         break;
 
                     case CommandExit:
@@ -43,7 +43,7 @@ namespace NewC_5_4
                         break;
 
                     default:
-                        ReportAnError("");
+                        ReportError("");
                         break;
                 }
             }
@@ -55,79 +55,112 @@ namespace NewC_5_4
             Console.WriteLine($"Введите ФИО Сотрудника:");
             string inputUserFullName = Console.ReadLine().ToLower();
 
-            Console.WriteLine($"Введите должность для этого сотрудника:");
+            Console.WriteLine($"Введите должность сотрудника:");
             string inputUserPosition = Console.ReadLine().ToLower();
 
-            if (dossiers.ContainsKey(inputUserPosition))
-                dossiers[inputUserPosition].Add(inputUserFullName);
-            else
-                dossiers.Add(inputUserPosition, [inputUserFullName]);
+
+            if (dossiers.ContainsKey(inputUserPosition) == false)
+                dossiers.Add(inputUserPosition, new List<string>());
+
+            dossiers[inputUserPosition].Add(inputUserFullName);
         }
 
         static void ShowAllDossiers(Dictionary<string, List<string>> dossiers)
         {
             Console.Clear();
 
-            if (dossiers.LongCount() == 0)
+            if (dossiers.Count == 0)
             {
-                ReportAnError("Досье пустое, заполните досье!");
+                ReportError("Досье пустое, заполните досье!");
             }
             else
             {
-                foreach (var item in dossiers.Keys)
+                foreach (var position in dossiers.Keys)
                 {
-                    Console.Write($"Должность: {item} - ");
+                    Console.Write($"Должность: {position} - ");
+                    int fullNamePosition = 1;
 
-                    foreach (var item2 in dossiers[item])
+                    foreach (var fullName in dossiers[position])
                     {
-                        Console.Write($"{item2}; ");
+                        Console.Write($"{fullNamePosition}) {fullName}; \n");
+                        fullNamePosition++;
                     }
-
-                    Console.WriteLine();
                 }
 
                 Console.ReadKey();
             }
         }
 
-        static void DeleteDossierByFullName(Dictionary<string, List<string>> dossiers)
+        static void DeleteDossierFullName(Dictionary<string, List<string>> dossiers)
         {
-            Console.Clear();
-            Console.WriteLine($"Введите ФИО Сотрудника для удаления.");
-            string inputUser = Console.ReadLine().ToLower();
-            bool deletePosition = false;
-            bool deleteFullName = false;
+            Console.WriteLine($"Введите должность сотрудника:");
+            string inputUserPosition = Console.ReadLine().ToLower();
 
-            foreach (var item in dossiers.Keys)
+            if (dossiers.ContainsKey(inputUserPosition) == false)
             {
-                foreach (var item2 in dossiers[item])
-                {
-                    if (item2 == inputUser)
-                    {
-                        dossiers[item].Remove(item2);
-                        deleteFullName = true;
-
-                        if (dossiers[item] == null)
-                            deletePosition = true;
-                    }
-                }
-
-                if (deletePosition)
-                    dossiers.Remove(item);
+                ReportError("Нет такой должности");
             }
-
-            if (deleteFullName)
-                Console.WriteLine($"Сотрудник удален.");
             else
-                ReportAnError("Нет такого сотрудника");
+            {
+                int firstPosition = 1;
+                int userInput = Utilite.GetNumber(firstPosition, dossiers[inputUserPosition].Count);
+
+                dossiers[inputUserPosition].RemoveAt(userInput);
+                Console.WriteLine($"Сотрудник удален.");
+
+                if (dossiers[inputUserPosition].Count == 0)
+                    dossiers.Remove(inputUserPosition);
+            }
 
             Console.ReadKey();
         }
 
-        static void ReportAnError(string causeOfError)
+        static void ReportError(string errorCause)
         {
-            Console.WriteLine($"Ошибка ввода. {causeOfError}");
+            Console.WriteLine($"Ошибка ввода. {errorCause}");
             Console.ReadKey();
+        }
+    }
+
+    class Utilite
+    {
+        public static int GetNumber(int lowerLimitRangeNumbers = Int32.MinValue, int upperLimitRangeNumbers = Int32.MaxValue)
+        {
+            bool isEnterNumber = true;
+            int enterNumber = 0;
+            string userInput;
+
+            while (isEnterNumber)
+            {
+                Console.WriteLine($"Введите число.");
+
+                userInput = Console.ReadLine();
+
+                if (int.TryParse(userInput, out enterNumber) == false)
+                    Console.WriteLine("Не корректный ввод.");
+                else if (VerifyForAcceptableNumber(enterNumber, lowerLimitRangeNumbers, upperLimitRangeNumbers))
+                    isEnterNumber = false;
+            }
+
+            return enterNumber;
+        }
+
+        private static bool VerifyForAcceptableNumber(int number, int lowerLimitRangeNumbers, int upperLimitRangeNumbers)
+        {
+            if (number < lowerLimitRangeNumbers)
+            {
+                Console.WriteLine($"Число вышло за нижний предел допустимого значения.");
+                return false;
+            }
+            else if (number > upperLimitRangeNumbers)
+            {
+                Console.WriteLine($"Число вышло за верхний предел допустимого значения.");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
