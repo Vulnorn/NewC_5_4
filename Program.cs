@@ -18,7 +18,10 @@ namespace NewC_5_4
             while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine($"{CommandAddDossier}. Добавить досье.\n{CommandOutputDossier}. Вывести все досье.\n{CommandDeliteDossier}. Удалить досье.\n{CommandExit}. Выход.");
+                Console.WriteLine($"{CommandAddDossier}. Добавить досье." +
+                    $"\n{CommandOutputDossier}. Вывести все досье." +
+                    $"\n{CommandDeliteDossier}. Удалить досье." +
+                    $"\n{CommandExit}. Выход.");
                 string userChoice = Console.ReadLine();
 
                 switch (userChoice)
